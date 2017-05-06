@@ -22,6 +22,7 @@ export default class Node extends BaseComponent {
 
     setOutput(event) {
         event.dataTransfer.setData(_NODE, this.props.node.getId());
+        event.stopPropagation();
     }
 
     setInput(inputId, index, event) {
@@ -33,12 +34,16 @@ export default class Node extends BaseComponent {
         return false;
     }
 
-    onDrag(evt, data) {
-        MapFlowActionCreator.updateNodeCoordinates(this.props.node.getId(), data.x, data.y)
-        evt.stopPropagation();
+    onDrag(event, data) {
+        MapFlowActionCreator.updateNodeCoordinates(this.props.node.getId(), data.x, data.y);
+        event.stopPropagation();
     }
 
     cancelEvent(event) {
+        event.stopPropagation();
+    }
+
+    cancelDefault(event) {
         event.preventDefault();
     }
 
@@ -48,7 +53,7 @@ export default class Node extends BaseComponent {
         let name = node.getName();
         let selectedClass = node.isSelected() ? "selected" : "";
         let inputDiv = node.getInputs().map((input, index) => {
-            return <div key={index} draggable="true" onDrop={this.setInput.bind(this, input, index)} onDragEnter={this.cancelEvent}  onDragOver={this.cancelEvent} className="mf-node-input cancel btn">&nbsp;</div>
+            return <div key={index} draggable="true" onDrop={this.setInput.bind(this, input, index)} onDragEnter={this.cancelDefault}  onDragOver={this.cancelDefault} className="mf-node-input cancel btn">&nbsp;</div>
         });
 
         return <Draggable
@@ -57,6 +62,7 @@ export default class Node extends BaseComponent {
             cancel=".cancel"
             defaultPosition={{x: node.x, y: node.y}}
             onDrag={this.onDrag.bind(this)}
+            onMouseDown={this.cancelEvent}
             position={null}
         >
             <div ref="mfNode" id={id} className={"mf-node handle unselectable " + selectedClass}>
@@ -64,7 +70,7 @@ export default class Node extends BaseComponent {
 
                 <span>{ name }</span>
 
-                { node.hasOutputs() ? <div draggable="true" onDragStart={this.setOutput.bind(this)} className="mf-node-output cancel btn">&nbsp;</div> : null }
+                { node.hasOutput() ? <div draggable="true" onDragStart={this.setOutput.bind(this)} className="mf-node-output cancel btn" onMouseDown={this.cancelEvent}>&nbsp;</div> : null }
             </div>
         </Draggable>;
     }

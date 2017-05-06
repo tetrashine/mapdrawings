@@ -60,17 +60,17 @@ export default class Board extends BaseComponent {
     storesToComponents(nodes) {
         let components = [];
         let lines = [];
-        nodes.forEach(node => {
+        nodes.forEach((node, i) => {
             let component = <NodeComponent ref={'node' + node.getId()} key={node.getId()} node={node} />;
             components.push(component);
 
             let x = node.getX();
             let y = node.getY();
-            let outputNodes = node.getOutputNodes();
 
-            if (outputNodes.length) {
-                outputNodes.forEach((output, outputIndex) => {
-                    let inputIndex = node.getOutputNodeIndex(outputIndex);
+            if (node.hasOutput()) {
+                node.getOutputs().forEach(id => {
+                    let output = node.getOutput(id);
+                    let inputIndex = node.getOutputNodeIndex(id);
                     lines.push(this.drawLine(i, {
                         x: x + 165,
                         y: y + 25

@@ -15,6 +15,11 @@ export default class Node {
     getX() { return this.x; }
     getY() { return this.y; }
     isSelected() { return this.selected; }
+    getInput(id) { return this.linkInputs[id]; }
+    getInputs() { return Object.keys(this.linkInputs); }
+    getOutput(id) { return this.linkOutputs[id].node; }
+    getOutputs() { return Object.keys(this.linkOutputs); }
+    getOutputNodeIndex(id) { return this.linkOutputs[id].index; }
 
     select() {
         this.selected = true;
@@ -27,41 +32,48 @@ export default class Node {
     clearAll() {
         this.variableInputs = {};
         this.linkInputs = {};
-        this.linkOutputs = [];
-        this.linkOutputsIndex = [];
+        this.linkOutputs = {};
+    }
+
+    reset() {
+        this.getInputs().forEach(id => {
+            let node = this.getInput(id);
+            node.unlinkOutputNode(id);
+        });
+
+        this.getOutputs().forEach(id => {
+            let node = this.getOutput(id);
+            node.unlinkInputNode(id);
+        });
+
+        this.clearAll();
     }
 
     linkInputNode(id, node) {
         this.linkInputs[id] = node;
     }
 
-    linkOutputNode(node, index) {
-        this.linkOutputs.push(node);
-        this.linkOutputsIndex.push(index);
+    unlinkInputNode(id) {
+        delete this.linkInputs[id];
+    }
+
+    linkOutputNode(inputId, node, index) {
+        this.linkOutputs[inputId] = {
+            node: node,
+            index: index
+        };
+    }
+
+    unlinkOutputNode(inputId) {
+        delete this.linkOutputs[inputId];
     }
 
     hasInputs() {
         return this.getInputs().length > 0;
     }
 
-    getInputs() {
-        return Object.getOwnPropertyNames(this.linkInputs);
-    }
-
-    hasOutputs() {
-        return this.getOutputs().length > 0;
-    }
-
-    getOutputs() {
-        return Object.getOwnPropertyNames(this.linkOutputs);
-    }
-
-    getOutputNodes() {
-        return this.linkOutputs;
-    }
-
-    getOutputNodeIndex(index) {
-        return this.linkOutputsIndex[index];
+    hasOutput() {
+        return false;
     }
 
     preprocess() {

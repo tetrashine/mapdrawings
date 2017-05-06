@@ -43,7 +43,7 @@ class MapFlowStore extends BaseStore {
         let outputNode = this.getNodeById(output);
 
         inputNode.linkInputNode(inputId, outputNode);
-        outputNode.linkOutputNode(inputNode, index);
+        outputNode.linkOutputNode(inputId, inputNode, index);
     }
 
     execute() {
@@ -53,7 +53,10 @@ class MapFlowStore extends BaseStore {
     delete() {
         for (let index = this.nodes.length - 1; index >= 0; index--) {
             if (this.nodes[index].isSelected()) {
-                this.nodes.splice(index, 1);
+                this.node = this.nodes.splice(index, 1);
+                this.node.forEach(n => {
+                    n.reset();
+                });
             }
         }
     }

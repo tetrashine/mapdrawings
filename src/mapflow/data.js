@@ -6,14 +6,11 @@ export default class Data extends Node {
         this.value = value;
     }
 
-    clearAll() {
-        super.clearAll();
-        this.linkInputs = {};
-
-        this.linkOutputs = [];
-    }
-
     process() {
         return this.value;
+    }
+
+    hasOutput() {
+        return true;
     }
 }
