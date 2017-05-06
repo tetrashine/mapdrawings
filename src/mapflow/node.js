@@ -38,7 +38,9 @@ export default class Node {
     reset() {
         this.getInputs().forEach(id => {
             let node = this.getInput(id);
-            node.unlinkOutputNode(id);
+            if (node) {
+                node.unlinkOutputNode(id);
+            }
         });
 
         this.getOutputs().forEach(id => {
@@ -54,7 +56,7 @@ export default class Node {
     }
 
     unlinkInputNode(id) {
-        delete this.linkInputs[id];
+        this.linkInputs[id] = undefined;
     }
 
     linkOutputNode(inputId, node, index) {

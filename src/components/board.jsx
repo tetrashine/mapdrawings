@@ -6,6 +6,7 @@ import NodeComponent from 'components/node';
 import MapFlowActionCreator from 'actions/mapflowactioncreator';
 
 const _PX = 'px';
+const _LINE = 'line';
 export default class Board extends BaseComponent {
 
     constructor() {
@@ -18,6 +19,10 @@ export default class Board extends BaseComponent {
         this.state = {
             style: {}
         }
+    }
+
+    formLinkId(sourceId, inputId) {
+        return sourceId + '-' + inputId;
     }
 
     componentDidMount() {
@@ -34,7 +39,7 @@ export default class Board extends BaseComponent {
         };
     }
 
-    drawLine(key, from, to, thickness=1) {
+    drawLine(key, from, to, selected=false, thickness=1) {
         let x1 = from.x;
         let y1 = from.y;
         let x2 = to.x;
@@ -51,10 +56,11 @@ export default class Board extends BaseComponent {
             width: length + _PX,
             position: 'absolute',
             top: cy + _PX,
-            left: cx + _PX
+            left: cx + _PX,
+            backgroundColor: (selected ? 'blue' : 'black')
         };
 
-        return <div key={key} className='line' style={style}></div>
+        return <div ref={_LINE+key} key={key} className='line' style={style}></div>
     }
 
     storesToComponents(nodes) {
@@ -64,6 +70,7 @@ export default class Board extends BaseComponent {
             let component = <NodeComponent ref={'node' + node.getId()} key={node.getId()} node={node} />;
             components.push(component);
 
+            let sourceId = node.getId();
             let x = node.getX();
             let y = node.getY();
 
@@ -71,13 +78,14 @@ export default class Board extends BaseComponent {
                 node.getOutputs().forEach(id => {
                     let output = node.getOutput(id);
                     let inputIndex = node.getOutputNodeIndex(id);
-                    lines.push(this.drawLine(i, {
+                    let lineId = this.formLinkId(sourceId, id);
+                    lines.push(this.drawLine(lineId, {
                         x: x + 165,
                         y: y + 25
                     }, {
                         x: output.getX() - 14,
                         y: output.getY() + (7 * (inputIndex + 1))
-                    }));
+                    }, typeof this.props.links[lineId] !== 'undefined'));
                 });
             }
         });
@@ -99,9 +107,9 @@ export default class Board extends BaseComponent {
 
     startHitSelection(event) {
         if (this.startSelection) {
-            let hitIds = this.getOverlappingComponents(this.refs.highlight);
+            let [hitIds, linkIds] = this.getOverlappingComponents(this.refs.highlight);
 
-            MapFlowActionCreator.selectedNodes(hitIds);
+            MapFlowActionCreator.selectedNodes(hitIds, linkIds);
             this.click = null;
             this.setState({
                 style: {
@@ -115,6 +123,7 @@ export default class Board extends BaseComponent {
 
     getOverlappingComponents(highlight) {
         let hitIds = [];
+        let hitLinks = [];
         let highlightOffset = this.getOffset(highlight);
 
         this.props.nodes.forEach((node, i) => {
@@ -123,9 +132,20 @@ export default class Board extends BaseComponent {
             if (this.hit(highlightOffset, offset)) {
                 hitIds.push(el.getNodeId());
             }
+
+            let sourceId = node.getId();
+            node.getOutputs().forEach(id => {
+                let linkId = this.formLinkId(sourceId, id);
+                let link = this.refs[_LINE+linkId];
+                let linkOffset = this.getOffset(link);
+
+                if (this.hit(highlightOffset, linkOffset)) {
+                    hitLinks.push(linkId);
+                }
+            });
         });
 
-        return hitIds;
+        return [hitIds, hitLinks];
     }
 
     hit(rect1, rect2) {

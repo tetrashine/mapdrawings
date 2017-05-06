@@ -11,7 +11,8 @@ export default class MapFlow extends BaseComponent {
     constructor() {
         super();
         this.state = {
-            nodes: MapFlowStore.getNodes()
+            nodes: MapFlowStore.getNodes(),
+            links: MapFlowStore.getSelectedLinks()
         };
 
         this._onChange = this._onChange.bind(this);
@@ -49,7 +50,10 @@ export default class MapFlow extends BaseComponent {
             <div onClick={this.delete}>Delete</div>
             <div onClick={this.clearAll}>Clear All</div>
 
-            <BoardComponent nodes={this.state.nodes} />
+            <BoardComponent
+                nodes={this.state.nodes}
+                links={this.state.links}
+            />
         </div>;
     }
 }

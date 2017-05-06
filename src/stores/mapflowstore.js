@@ -13,6 +13,7 @@ class MapFlowStore extends BaseStore {
 
         this.name = "";
         this.nodes = [];
+        this.selectedLinks = {};
     }
 
     createData() {
@@ -51,6 +52,25 @@ class MapFlowStore extends BaseStore {
     }
 
     delete() {
+        //Delete link first to ensure node still exist
+        Object.keys(this.selectedLinks).forEach(key => {
+            delete this.selectedLinks[key];
+
+            let res = key.split('-');
+            let sourceId = res[0];
+            let name = res[1];
+
+            for (let index = this.nodes.length - 1; index >= 0; index--) {
+                let source = this.nodes[index];
+                if (source.getId() === sourceId) {
+                    let target = source.getOutput(name);
+                    target.unlinkInputNode(name);
+                    source.unlinkOutputNode(name)
+                    break;
+                }
+            }
+        });
+
         for (let index = this.nodes.length - 1; index >= 0; index--) {
             if (this.nodes[index].isSelected()) {
                 this.node = this.nodes.splice(index, 1);
@@ -63,6 +83,10 @@ class MapFlowStore extends BaseStore {
 
     getNodes() {
         return this.nodes;
+    }
+
+    getSelectedLinks() {
+        return this.selectedLinks;
     }
 
     getNodeById(id) {
@@ -88,7 +112,7 @@ class MapFlowStore extends BaseStore {
         node.setXY(x, y);
     }
 
-    selectNodes(ids) {
+    selectNodes(ids, linkIds) {
         let selectedIndex = 0;
         this.nodes.forEach(node => {
             if (node.getId() === ids[selectedIndex]) {
@@ -97,6 +121,10 @@ class MapFlowStore extends BaseStore {
             } else {
                 node.unselect();
             }
+        });
+
+        linkIds.forEach(linkId => {
+            this.selectedLinks[linkId] = true;
         });
     }
 }
@@ -142,7 +170,7 @@ AppDispatcher.register(function(payload) {
             store.emitChange();
             break;
         case MapFlowConstants.SELECTED_NODES:
-            store.selectNodes(action.ids);
+            store.selectNodes(action.ids, action.linkIds);
             store.emitChange();
             break;
         default:

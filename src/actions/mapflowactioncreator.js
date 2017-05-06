@@ -58,10 +58,11 @@ class MapFlowActionCreator {
         });
     }
 
-    selectedNodes(ids) {
+    selectedNodes(ids, linkIds) {
         AppDispatcher.handleAction({
             actionType: MapFlowConstants.SELECTED_NODES,
-            ids: ids
+            ids: ids,
+            linkIds: linkIds
         });
     }
 };
