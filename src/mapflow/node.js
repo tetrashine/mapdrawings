@@ -1,0 +1,105 @@
+// chain of events
+// preprocess -> input -> process -> postprocess -> output
+export default class Node {
+    constructor(id, name='Node') {
+        this.id = id;
+        this.name = name;
+        this.selected = false;
+        this.clearAll();
+        this.x = 0;
+        this.y = 0;
+    }
+
+    getId() { return this.id; }
+    getName() { return this.name; }
+    getX() { return this.x; }
+    getY() { return this.y; }
+    isSelected() { return this.selected; }
+
+    select() {
+        this.selected = true;
+    }
+
+    unselect() {
+        this.selected = false;
+    }
+
+    clearAll() {
+        this.variableInputs = {};
+        this.linkInputs = {};
+        this.linkOutputs = [];
+        this.linkOutputsIndex = [];
+    }
+
+    linkInputNode(id, node) {
+        this.linkInputs[id] = node;
+    }
+
+    linkOutputNode(node, index) {
+        this.linkOutputs.push(node);
+        this.linkOutputsIndex.push(index);
+    }
+
+    hasInputs() {
+        return this.getInputs().length > 0;
+    }
+
+    getInputs() {
+        return Object.getOwnPropertyNames(this.linkInputs);
+    }
+
+    hasOutputs() {
+        return this.getOutputs().length > 0;
+    }
+
+    getOutputs() {
+        return Object.getOwnPropertyNames(this.linkOutputs);
+    }
+
+    getOutputNodes() {
+        return this.linkOutputs;
+    }
+
+    getOutputNodeIndex(index) {
+        return this.linkOutputsIndex[index];
+    }
+
+    preprocess() {
+        this.inputs = {};
+    }
+
+    input(id, val) {
+        this.inputs[id] = val;
+
+        //Check if all inputs are in
+        if (Object.keys(this.inputs).length === Object.keys(this.linkInputs).length) {
+            startProcessing(inputs);
+        }
+    }
+
+    startProcessing(inputs) {
+        let outputVal = this.process(inputs);
+        this.postprocess();
+        this.output(outVal);
+    }
+
+    process(inputs) {
+        return 0;
+    }
+
+    postprocess() {
+        this.inputs = {};
+    }
+
+    output(val) {
+        Object.keys(this.linkOutputs).forEach(key => {
+            let node = this.linkOutputs[key];
+            node.input(key, val);
+        });
+    }
+
+    setXY(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}
