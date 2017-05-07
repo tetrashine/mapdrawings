@@ -5,6 +5,7 @@ export default class Node {
         this.id = id;
         this.name = name;
         this.selected = false;
+        this.inputs = {};
         this.linkInputs = {};
         this.linkOutputs = {};
         this.clearAll();
@@ -91,23 +92,37 @@ export default class Node {
         return false;
     }
 
-    preprocess() {
-        this.inputs = {};
-    }
-
     input(id, val) {
         this.inputs[id] = val;
 
         //Check if all inputs are in
-        if (Object.keys(this.inputs).length === Object.keys(this.linkInputs).length) {
+        /*if (Object.keys(this.inputs).length === Object.keys(this.linkInputs).length) {
             startProcessing(inputs);
-        }
+        }*/
     }
 
-    startProcessing(inputs) {
-        let outputVal = this.process(inputs);
+    readyForExecution() {
+        let ready = true;
+        this.getInputs().every(id => {
+            if (typeof this.getInput(id) === undefined) {
+                ready = false;
+                return false;
+            }
+            return true;
+        });
+
+        return ready;
+    }
+
+    execute(inputs) {
+        this.preprocess();
+        let outputVal = this.process(this.inputs);
         this.postprocess();
-        this.output(outVal);
+        //this.postprocess();
+        this.output(outputVal);
+    }
+
+    preprocess() {
     }
 
     process(inputs) {
@@ -115,12 +130,11 @@ export default class Node {
     }
 
     postprocess() {
-        this.inputs = {};
     }
 
     output(val) {
         Object.keys(this.linkOutputs).forEach(key => {
-            let node = this.linkOutputs[key];
+            let node = this.getOutput(key);
             node.input(key, val);
         });
     }

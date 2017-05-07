@@ -47,9 +47,39 @@ class MapFlowStore extends BaseStore {
         outputNode.linkOutputNode(inputId, inputNode, index);
     }
 
+    preExecute() {}
+
     execute() {
-        console.log(this.nodes);
+        this.preExecute();
+
+        let storage, storageIds;
+        let hasExecution = false;
+        let nodes = this.nodes.slice()
+
+        do {
+            storageIds = {};
+            storage = [];
+            hasExecution = false;
+            nodes.forEach((node, index) => {
+                if (node.readyForExecution() && !storageIds[node.getId()]) {
+                    node.execute();
+                    node.getOutputs().forEach(id => {
+                        let output = node.getOutput(id);
+                        storage.push(output);
+                        storageIds[output.getId()] = true;
+                    });
+
+                    hasExecution = true;
+                }
+            });
+            nodes = storage;
+
+        } while(hasExecution);
+
+        this.postExecute();
     }
+
+    postExecute() {}
 
     delete() {
         //Delete link first to ensure node still exist

@@ -9,6 +9,6 @@ export default class Log extends Node {
     }
 
     process(inputs) {
-        console.log(this.linkInputs['Input'])
+        console.log(inputs['Input']);
     }
 }
