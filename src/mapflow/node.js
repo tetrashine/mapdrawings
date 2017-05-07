@@ -5,6 +5,8 @@ export default class Node {
         this.id = id;
         this.name = name;
         this.selected = false;
+        this.linkInputs = {};
+        this.linkOutputs = {};
         this.clearAll();
         this.x = 0;
         this.y = 0;
@@ -15,8 +17,10 @@ export default class Node {
     getX() { return this.x; }
     getY() { return this.y; }
     isSelected() { return this.selected; }
+    addInput(id) { this.linkInputs[id] = undefined; }
     getInput(id) { return this.linkInputs[id]; }
     getInputs() { return Object.keys(this.linkInputs); }
+    addOutput(id) { this.linkOutputs[id] = undefined; }
     getOutput(id) { return this.linkOutputs[id].node; }
     getOutputs() { return Object.keys(this.linkOutputs); }
     getOutputNodeIndex(id) { return this.linkOutputs[id].index; }
@@ -30,9 +34,13 @@ export default class Node {
     }
 
     clearAll() {
-        this.variableInputs = {};
-        this.linkInputs = {};
-        this.linkOutputs = {};
+        this.getInputs().forEach(id => {
+            this.unlinkInputNode(id);
+        });
+
+        this.getOutputs().forEach(id => {
+            this.unlinkOutputNode(id);
+        });
     }
 
     reset() {

@@ -4,15 +4,8 @@ export default class Log extends Node {
 
     constructor(id) {
         super(id, 'Log');
-    }
 
-    clearAll() {
-        super.clearAll();
-        this.linkInputs = {
-            'Input': null
-        };
-
-        this.linkOutputs = {};
+        this.addInput('Input');
     }
 
     process(inputs) {
