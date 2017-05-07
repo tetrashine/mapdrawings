@@ -60,6 +60,11 @@ export default class Node {
     }
 
     linkInputNode(id, node) {
+        //If there is previous input, unlink it first
+        if (this.linkInputs[id]) {
+            this.linkInputs[id].unlinkOutputNode(id);
+        }
+
         this.linkInputs[id] = node;
     }
 
