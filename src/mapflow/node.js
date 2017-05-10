@@ -118,7 +118,6 @@ export default class Node {
         this.preprocess();
         let outputVal = this.process(this.inputs);
         this.postprocess();
-        //this.postprocess();
         this.output(outputVal);
     }
 

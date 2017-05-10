@@ -153,6 +153,12 @@ class MapFlowStore extends BaseStore {
             }
         });
 
+        //set all to false
+        Object.keys(this.selectedLinks).forEach(id => {
+            this.selectedLinks[id] = undefined;
+        });
+
+        //set selected ones
         linkIds.forEach(linkId => {
             this.selectedLinks[linkId] = true;
         });

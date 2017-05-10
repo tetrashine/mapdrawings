@@ -127,22 +127,39 @@ export default class Board extends BaseComponent {
         let highlightOffset = this.getOffset(highlight);
 
         this.props.nodes.forEach((node, i) => {
+            //check for hit test at nodes
             let el = this.refs['node' + node.getId()];
             let offset = this.getOffset(el.getDomObj());
+            let sourceId = node.getId();
             if (this.hit(highlightOffset, offset)) {
                 hitIds.push(el.getNodeId());
-            }
 
-            let sourceId = node.getId();
-            node.getOutputs().forEach(id => {
-                let linkId = this.formLinkId(sourceId, id);
-                let link = this.refs[_LINE+linkId];
-                let linkOffset = this.getOffset(link);
-
-                if (this.hit(highlightOffset, linkOffset)) {
+                //push all output links of selected node
+                node.getInputs().forEach(id => {
+                    let output = node.getInput(id);
+                    if (output) {
+                        let linkId = this.formLinkId(output.getId(), id);
+                        hitLinks.push(linkId);
+                    }
+                });
+                node.getOutputs().forEach(id => {
+                    let linkId = this.formLinkId(sourceId, id);
                     hitLinks.push(linkId);
-                }
-            });
+                });
+            } else {
+                //only check if node itself is not selected,
+                //else all output links should be selected
+                //check for hit test at links
+                node.getOutputs().forEach(id => {
+                    let linkId = this.formLinkId(sourceId, id);
+                    let link = this.refs[_LINE+linkId];
+                    let linkOffset = this.getOffset(link);
+
+                    if (this.hit(highlightOffset, linkOffset)) {
+                        hitLinks.push(linkId);
+                    }
+                });
+            }
         });
 
         return [hitIds, hitLinks];
