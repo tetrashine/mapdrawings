@@ -10,6 +10,16 @@ export default class Node extends BaseComponent {
 
     constructor() {
         super();
+
+        this.state = {
+            bounds: {right: 0, left: 0}
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            bounds: this.refs.mfNode.getBoundingClientRect()
+        });
     }
 
     getNodeId() {
@@ -55,6 +65,12 @@ export default class Node extends BaseComponent {
         let inputDiv = node.getInputs().map((input, index) => {
             return <div key={index} draggable="true" onDrop={this.setInput.bind(this, input, index)} onDragEnter={this.cancelDefault}  onDragOver={this.cancelDefault} className="mf-node-input cancel btn">&nbsp;</div>
         });
+        let bounds = {
+            left: this.props.bounds.left,
+            right: this.props.bounds.right - this.state.bounds.width,
+            top: this.props.bounds.top,
+            bottom: this.props.bounds.bottom
+        }
 
         return <Draggable
             axis="both"
@@ -64,6 +80,7 @@ export default class Node extends BaseComponent {
             onDrag={this.onDrag.bind(this)}
             onMouseDown={this.cancelEvent}
             position={null}
+            bounds={bounds}
         >
             <div ref="mfNode" id={id} className={"mf-node handle unselectable " + selectedClass}>
                 <div className="mf-node-inputs">{ inputDiv }</div>

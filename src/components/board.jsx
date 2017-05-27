@@ -17,6 +17,7 @@ export default class Board extends BaseComponent {
         this.startHitSelection = this.startHitSelection.bind(this);
 
         this.state = {
+            mount: false,
             style: {}
         }
     }
@@ -26,6 +27,9 @@ export default class Board extends BaseComponent {
     }
 
     componentDidMount() {
+        this.setState({
+            mount: true
+        });
         this.boardOffset = this.getOffset(this.refs.board);
     }
 
@@ -66,8 +70,10 @@ export default class Board extends BaseComponent {
     storesToComponents(nodes) {
         let components = [];
         let lines = [];
+        let bounds = (this.state.mount) ? this.refs.board.getBoundingClientRect() : {};
+
         nodes.forEach((node, i) => {
-            let component = <NodeComponent ref={'node' + node.getId()} key={node.getId()} node={node} />;
+            let component = <NodeComponent ref={'node' + node.getId()} key={node.getId()} node={node} bounds={bounds} />;
             components.push(component);
 
             let sourceId = node.getId();

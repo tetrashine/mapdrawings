@@ -63,9 +63,15 @@ export default class MapFlow extends BaseComponent {
                 <i className="material-icons btn" onClick={this.clearAll}>delete_forever</i>
             </button>
             |
-            <i className="material-icons">format_align_left</i>
-            <i className="material-icons">format_align_center</i>
-            <i className="material-icons">format_align_right</i>
+            <button className="mdl-button mdl-js-button mdl-button--icon">
+                <i className="material-icons">format_align_left</i>
+            </button>
+            <button className="mdl-button mdl-js-button mdl-button--icon">
+                <i className="material-icons">format_align_center</i>
+            </button>
+            <button className="mdl-button mdl-js-button mdl-button--icon">
+                <i className="material-icons">format_align_right</i>
+            </button>
             <BoardComponent
                 nodes={this.state.nodes}
                 links={this.state.links}
