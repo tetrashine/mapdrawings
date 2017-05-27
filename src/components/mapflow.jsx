@@ -43,12 +43,25 @@ export default class MapFlow extends BaseComponent {
     render() {
 
         return <div id='mf-board'>
-            <i className="material-icons btn" onClick={this.exceute}>play_arrow</i>
-            <i className="material-icons btn" onClick={this.createData} >add_circle</i>
-            <i className="material-icons btn" onClick={this.createNode}>note_add</i>
-            <i className="material-icons btn" onClick={this.createAlert}>add_alarm</i>
-            <i className="material-icons btn" onClick={this.delete}>delete</i>
-            <i className="material-icons btn" onClick={this.clearAll}>delete_forever</i>
+            <button className="mdl-button mdl-js-button mdl-button--icon">
+                <i className="material-icons btn" onClick={this.exceute}>play_arrow</i>
+            </button>
+            <button id="demo-menu-lower-left" className="mdl-button mdl-js-button mdl-button--icon">
+                <i className="material-icons">add_circle</i>
+            </button>
+
+            <ul className="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" htmlFor="demo-menu-lower-left">
+              <li className="mdl-menu__item" onClick={this.createData}>Add Data</li>
+              <li className="mdl-menu__item" onClick={this.createNode}>Add Node</li>
+              <li className="mdl-menu__item" onClick={this.createAlert}>Add Alert</li>
+            </ul>
+
+            <button className="mdl-button mdl-js-button mdl-button--icon">
+                <i className="material-icons btn" onClick={this.delete}>delete</i>
+            </button>
+            <button className="mdl-button mdl-js-button mdl-button--icon">
+                <i className="material-icons btn" onClick={this.clearAll}>delete_forever</i>
+            </button>
             |
             <i className="material-icons">format_align_left</i>
             <i className="material-icons">format_align_center</i>
