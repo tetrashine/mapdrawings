@@ -43,13 +43,16 @@ export default class MapFlow extends BaseComponent {
     render() {
 
         return <div id='mf-board'>
-            <div onClick={this.exceute}>Run</div>
-            <div onClick={this.createData}>Add Data</div>
-            <div onClick={this.createNode}>Add Node</div>
-            <div onClick={this.createAlert}>Add Alert</div>
-            <div onClick={this.delete}>Delete</div>
-            <div onClick={this.clearAll}>Clear All</div>
-
+            <i className="material-icons btn" onClick={this.exceute}>play_arrow</i>
+            <i className="material-icons btn" onClick={this.createData} >add_circle</i>
+            <i className="material-icons btn" onClick={this.createNode}>note_add</i>
+            <i className="material-icons btn" onClick={this.createAlert}>add_alarm</i>
+            <i className="material-icons btn" onClick={this.delete}>delete</i>
+            <i className="material-icons btn" onClick={this.clearAll}>delete_forever</i>
+            |
+            <i className="material-icons">format_align_left</i>
+            <i className="material-icons">format_align_center</i>
+            <i className="material-icons">format_align_right</i>
             <BoardComponent
                 nodes={this.state.nodes}
                 links={this.state.links}
