@@ -6,14 +6,31 @@ import Sum from 'mapflow/examples/sum';
 import Data from 'mapflow/data';
 import Node from 'mapflow/node';
 import BaseStore from 'stores/basestore';
+import MapflowMode from 'constants/mapflowmode';
 
 class MapFlowStore extends BaseStore {
     constructor() {
         super();
 
+        this.mode = MapflowMode.DEFAULT;
+        this.start = {x: 0, y: 0};
+        this.end = {x: 0, y: 0};
         this.name = "";
         this.nodes = [];
         this.selectedLinks = {};
+    }
+
+    startLinkDrag(x, y) {
+        this.mode = MapflowMode.LINK;
+        this.start = {
+            x: x, y: y
+        };
+    }
+
+    updateLinkDrag(x, y) {
+        this.end = {
+            x: x, y: y
+        };
     }
 
     createData() {
@@ -45,6 +62,10 @@ class MapFlowStore extends BaseStore {
 
         inputNode.linkInputNode(inputId, outputNode);
         outputNode.linkOutputNode(inputId, inputNode, index);
+    }
+
+    endLinkDrag() {
+        this.mode = MapflowMode.DEFAULT;
     }
 
     preExecute() {}
@@ -109,6 +130,17 @@ class MapFlowStore extends BaseStore {
                 });
             }
         }
+    }
+
+    getMode() {
+        return this.mode;
+    }
+
+    getLink() {
+        return {
+            start: this.start,
+            end: this.end
+        };
     }
 
     getNodes() {
@@ -207,6 +239,18 @@ AppDispatcher.register(function(payload) {
             break;
         case MapFlowConstants.SELECTED_NODES:
             store.selectNodes(action.ids, action.linkIds);
+            store.emitChange();
+            break;
+        case MapFlowConstants.START_DRAG_COORDS:
+            store.startLinkDrag(action.x, action.y);
+            store.emitChange();
+            break;
+        case MapFlowConstants.UPDATE_DRAG_COORDS:
+            store.updateLinkDrag(action.x, action.y);
+            store.emitChange();
+            break;
+        case MapFlowConstants.DRAG_END:
+            store.endLinkDrag();
             store.emitChange();
             break;
         default:

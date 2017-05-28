@@ -65,6 +65,26 @@ class MapFlowActionCreator {
             linkIds: linkIds
         });
     }
+
+    startDragCoords(x, y) {
+        AppDispatcher.handleAction({
+            actionType: MapFlowConstants.START_DRAG_COORDS,
+            x: x, y: y
+        });
+    }
+
+    updateDragCoords(x, y) {
+        AppDispatcher.handleAction({
+            actionType: MapFlowConstants.UPDATE_DRAG_COORDS,
+            x: x, y: y
+        });
+    }
+
+    updateDragEnd() {
+        AppDispatcher.handleAction({
+            actionType: MapFlowConstants.DRAG_END
+        });
+    }
 };
 
 export default new MapFlowActionCreator();

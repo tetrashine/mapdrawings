@@ -12,7 +12,7 @@ export default class MapFlow extends BaseComponent {
         super();
         this.state = {
             nodes: MapFlowStore.getNodes(),
-            links: MapFlowStore.getSelectedLinks()
+            links: MapFlowStore.getSelectedLinks(),
         };
 
         this._onChange = this._onChange.bind(this);
@@ -29,7 +29,8 @@ export default class MapFlow extends BaseComponent {
 
     _onChange() {
         this.setState({
-            nodes: MapFlowStore.getNodes()
+            nodes: MapFlowStore.getNodes(),
+            links: MapFlowStore.getSelectedLinks(),
         });
     }
 
@@ -41,7 +42,6 @@ export default class MapFlow extends BaseComponent {
     createAlert() { MapFlowActionCreator.createLog(); }
 
     render() {
-
         return <div id='mf-board'>
             <button className="mdl-button mdl-js-button mdl-button--icon">
                 <i className="material-icons btn" onClick={this.exceute}>play_arrow</i>

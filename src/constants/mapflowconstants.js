@@ -9,5 +9,8 @@ export default KeyMirror({
     LINK_INPUT: null,
     UPDATE_COORD: null,
     SELECTED_NODES: null,
-    DELETE: null
+    DELETE: null,
+    START_DRAG_COORDS: null,
+    UPDATE_DRAG_COORDS: null,
+    DRAG_END: null
 });

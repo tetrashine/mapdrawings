@@ -31,8 +31,19 @@ export default class Node extends BaseComponent {
     }
 
     setOutput(event) {
+        MapFlowActionCreator.startDragCoords(event.clientX, event.clientY);
         event.dataTransfer.setData(_NODE, this.props.node.getId());
         event.stopPropagation();
+    }
+
+    setOutputDrag(event) {
+        //console.log(event.clientX + "," + event.clientY)
+        MapFlowActionCreator.updateDragCoords(event.clientX, event.clientY);
+        event.stopPropagation();
+    }
+
+    setOutputDragEnd() {
+        MapFlowActionCreator.updateDragEnd();
     }
 
     setInput(inputId, index, event) {
@@ -87,7 +98,7 @@ export default class Node extends BaseComponent {
 
                 <span>{ name }</span>
 
-                { node.hasOutput() ? <div draggable="true" onDragStart={this.setOutput.bind(this)} className="mf-node-output cancel btn" onMouseDown={this.cancelEvent}>&nbsp;</div> : null }
+                { node.hasOutput() ? <div draggable="true" onDragStart={this.setOutput.bind(this)} onDrag={this.setOutputDrag.bind(this)} onDragEnd={this.setOutputDragEnd.bind(this)} className="mf-node-output cancel btn" onMouseDown={this.cancelEvent}>&nbsp;</div> : null }
             </div>
         </Draggable>;
     }

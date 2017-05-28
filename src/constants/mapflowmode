@@ -1,0 +1,6 @@
+import KeyMirror from 'keyMirror';
+
+export default KeyMirror({
+    DEFAULT: null,
+    LINK: null
+});

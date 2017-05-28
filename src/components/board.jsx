@@ -7,6 +7,8 @@ import MapFlowActionCreator from 'actions/mapflowactioncreator';
 
 const _PX = 'px';
 const _LINE = 'line';
+import MapflowMode from 'constants/mapflowmode';
+
 export default class Board extends BaseComponent {
 
     constructor() {
